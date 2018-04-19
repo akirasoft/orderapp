@@ -1,0 +1,8 @@
+.classpath
+.project
+.springBeans
+.factorypath
+bin/
+.settings/
+target/
+*~
