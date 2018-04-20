@@ -10,8 +10,14 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>OrderModel</name>
 	<description>Order Model</description>
-	
-	<dependencies/>
+
+	<dependencies>
+		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <version>2.0.1.RELEASE</version>
+    	</dependency>
+	</dependencies>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -22,6 +28,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+            	<version>2.0.1.RELEASE</version>				
 			</plugin>
 		</plugins>
 	</build>
@@ -40,3 +47,4 @@
 	</pluginRepositories>
 
 </project>
+
