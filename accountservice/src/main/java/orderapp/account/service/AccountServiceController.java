@@ -1,5 +1,7 @@
 package orderapp.account.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,7 +25,7 @@ public class AccountServiceController {
 	@RequestMapping(value = "/accounts/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Account> getAccount(@PathVariable("id") String id) {	
 		System.out.println("Getting account with id: " + id);
-		Account account = accountService.getAccount(Integer.parseInt(id));
+		Optional<Account> account = accountService.findAccountById(Long.parseLong(id));
 		if (account == null) {
 			return new ResponseEntity<Account>(HttpStatus.NOT_FOUND);
 		}

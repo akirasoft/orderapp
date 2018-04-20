@@ -2,26 +2,33 @@ package orderapp.account.service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import orderapp.account.repository.AccountRepository;
 
 import orderapp.model.Account;
 
 @Service
 public class AccountService {
-	
-	int i = 0;
-	
-	private Map<Integer, Account> accounts = new HashMap<Integer, Account>();
 
-	public Account getAccount(int id) {
-		return accounts.get(id);
-	}
-	
-	public int createAccount(Account account) {
-		int id = i++ % 25;
-		account.setId(id);
-		accounts.put(id, account);
-		return id;
-	}
+    @Autowired
+    private AccountRepository accountRepository;
+
+    public Optional<Account> findAccountById(Long accountId) {
+        return Optional.ofNullable(accountRepository.findById(accountId))
+            .orElseThrow(() -> new AccountNotFoundException("Account not found with ID: " + accountId));
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public Account createAccount(Account account) {
+        final Account newAccount = new Account();
+        newAccount.setName(account.getName());
+        newAccount.setType(account.getType());
+        return accountRepository.save(newAccount);
+    }
+
 }
