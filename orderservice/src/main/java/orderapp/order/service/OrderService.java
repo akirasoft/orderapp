@@ -1,27 +1,32 @@
 package orderapp.order.service;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import orderapp.model.Order;
+import orderapp.order.repository.OrderRepository;
 
 @Service
+@Transactional
 public class OrderService {
-	
-	int i = 0;
-	
-	private Map<Integer, Order> orders = new HashMap<Integer, Order>();
 
-	public Order getOrder(int id) {
-		return orders.get(id);
-	}
-	
-	public int createOrder(Order order) {
-		int id = i++ % 25;
-		order.setId(id);
-		orders.put(id, order);
-		return id;
-	}
+    @Autowired
+    private OrderRepository orderRepository;
+
+    public Optional<Order> findOrderById(Long orderId) {
+        return Optional.ofNullable(orderRepository.findById(orderId))
+            .orElseThrow(() -> new OrderNotFoundException("Order not found with ID: " + orderId));
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public Order createOrder(Order order) {
+        final Order newOrder = new Order();
+        newOrder.setAccountId(order.getAccountId());
+        newOrder.setProductId(order.getProductId());
+        return orderRepository.save(newOrder);
+    }
 }
+

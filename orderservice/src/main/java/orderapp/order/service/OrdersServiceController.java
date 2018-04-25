@@ -3,6 +3,7 @@ package orderapp.order.service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +14,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,6 +31,7 @@ import orderapp.model.Order;
 
 @RestController
 @ConfigurationProperties
+@RequestMapping("/orders")
 public class OrdersServiceController {
 
 	private RestTemplate restTemplate = new RestTemplate();
@@ -42,6 +46,27 @@ public class OrdersServiceController {
 		this.accountServiceUrl = accountServiceUrl;
 	}
 
+    @PostMapping
+    public Order createOrder(@RequestBody Order order,
+		@RequestParam(value="createaccount", required=false) String createAccount,
+		@RequestParam(value="name", required=false) String accountName,
+		@RequestParam(value="type", required=false) String accountType, 
+		UriComponentsBuilder ucBuilder) {
+
+		System.out.println("Creating Order: " + order);
+
+        if (createAccount != null && createAccount.equals("true")) {
+        	Long accountId = createAccount(accountName, accountType);
+        	order.setAccountId(accountId);
+        } else {
+        	if (!isExistingAccount(order.getAccountId())) {
+        		throw new AccountNotFoundException("account id not found: " + order.getAccountId());
+        	}
+        }
+        return orderService.createOrder(order);
+	}
+    	
+/**
 	@RequestMapping(value = "/orders", method = RequestMethod.POST)
     public ResponseEntity<Void> createOrder(@RequestBody Order order,
     		@RequestParam(value="createaccount", required=false) String createAccount,
@@ -64,7 +89,15 @@ public class OrdersServiceController {
         headers.setLocation(ucBuilder.path("/orders/{id}").buildAndExpand(id).toUri());
         return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
 	}
+	**/
 	
+    @GetMapping("/{orderId}")
+	public Optional<Order> getAccount(@PathVariable Long orderId) {	
+		System.out.println("Getting order with id: " + orderId);
+		return orderService.findOrderById(orderId);	
+	}
+
+/**    
 	@RequestMapping(value = "/orders/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Order> getOrder(@PathVariable("id") String id) {	
 		System.out.println("Getting order with id: " + id);
@@ -74,7 +107,8 @@ public class OrdersServiceController {
 		}
 		return new ResponseEntity<Order>(order, HttpStatus.OK);		
 	}
-	
+**/	
+    
 	protected int createAccount(String name, String type)	{
         if (type == null || type.isEmpty()) {
         	type = "DEFAULT";

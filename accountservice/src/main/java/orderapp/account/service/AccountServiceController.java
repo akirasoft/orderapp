@@ -31,15 +31,10 @@ public class AccountServiceController {
 		return accountService.findAccountById(accountId);	
 	}
 	
-    //@RequestMapping(value = "/accounts", method = RequestMethod.POST)
-    //public Account createAccount(@RequestBody Account account, UriComponentsBuilder ucBuilder) {
     @PostMapping
     public Account createAccount(@RequestBody Account account) {
         System.out.println("Creating account: " + account);
         return accountService.createAccount(account);
-        //HttpHeaders headers = new HttpHeaders();
-        //headers.setLocation(ucBuilder.path("/accounts/{id}").buildAndExpand(id).toUri());
-        //return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
     }
  
 }

@@ -1,23 +1,31 @@
 package orderapp.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class Order {
 
-	private int id = -1;
-	private String productId = "";
-	private int accountId = -1;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
+	private String productId;
+	private Long accountId;
 
 	public Order() {}
 	
-	public Order(String productId, int accountId, String name) {
+	public Order(String productId, Long accountId, String name) {
 		super();
 		this.productId = productId;
 		this.accountId = accountId;
 	}
 	
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getProductId() {
@@ -26,10 +34,10 @@ public class Order {
 	public void setProductId(String productId) {
 		this.productId = productId;
 	}
-	public int getAccountId() {
+	public Long getAccountId() {
 		return accountId;
 	}
-	public void setAccountId(int accountId) {
+	public void setAccountId(Long accountId) {
 		this.accountId = accountId;
 	}
 
