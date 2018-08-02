@@ -31,6 +31,7 @@ import orderapp.model.Order;
 
 @RestController
 @ConfigurationProperties
+//@ConfigurationProperties("vcap.services.account-service.credentials")
 @RequestMapping("/orders")
 public class OrdersServiceController {
 
@@ -41,7 +42,7 @@ public class OrdersServiceController {
 
 	@Value("${accountServiceUrl}")
 	private String accountServiceUrl;
-
+	
 	public void setServiceUrl(String accountServiceUrl) {
 		this.accountServiceUrl = accountServiceUrl;
 	}
@@ -56,6 +57,7 @@ public class OrdersServiceController {
 		System.out.println("Creating Order: " + order);
 
         if (createAccount != null && createAccount.equals("true")) {
+        	System.out.println("Using url: " + accountServiceUrl);
         	Long accountId = createAccount(accountName, accountType);
         	order.setAccountId(accountId);
         } else {
@@ -109,7 +111,7 @@ public class OrdersServiceController {
 	}
 **/	
     
-	protected int createAccount(String name, String type)	{
+	protected Long createAccount(String name, String type)	{
         if (type == null || type.isEmpty()) {
         	type = "DEFAULT";
         }
@@ -123,10 +125,10 @@ public class OrdersServiceController {
 		//assertThat(response.getStatusCode(), is(HttpStatus.CREATED));
 		String location = result.getHeaders().getLocation().toString();
 		String id = location.substring(location.lastIndexOf('/')+1);
-		return Integer.parseInt(id);
+		return Long.parseLong(id);
 	}
 	
-	protected boolean isExistingAccount(int id) {
+	protected boolean isExistingAccount(long id) {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(accountServiceUrl).path("/accounts/{id}");
 
 		Map<String, String> prams = new HashMap<String, String>();
