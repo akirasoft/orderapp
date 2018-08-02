@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -28,10 +29,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import orderapp.model.Account;
 import orderapp.model.Order;
+import orderapp.order.service.util.RestTemplateUtil;
 
 @RestController
 @ConfigurationProperties
 //@ConfigurationProperties("vcap.services.account-service.credentials")
+@Configuration
 @RequestMapping("/orders")
 public class OrdersServiceController {
 
@@ -42,6 +45,9 @@ public class OrdersServiceController {
 
 	@Value("${accountServiceUrl}")
 	private String accountServiceUrl;
+
+	//@Value("${url}")
+	//private String url;
 	
 	public void setServiceUrl(String accountServiceUrl) {
 		this.accountServiceUrl = accountServiceUrl;
@@ -57,7 +63,7 @@ public class OrdersServiceController {
 		System.out.println("Creating Order: " + order);
 
         if (createAccount != null && createAccount.equals("true")) {
-        	System.out.println("Using url: " + accountServiceUrl);
+        	System.out.println("Using url: " + accountServiceUrl);        	
         	Long accountId = createAccount(accountName, accountType);
         	order.setAccountId(accountId);
         } else {
@@ -121,7 +127,8 @@ public class OrdersServiceController {
 
 		Account account = new Account(name, type);
 		HttpEntity<Account> entity = new HttpEntity<Account>(account, headers);
-		HttpEntity<String> result = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.POST, entity, String.class);
+		//HttpEntity<String> result = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.POST, entity, String.class);
+		HttpEntity<String> result = RestTemplateUtil.getRestTemplate().exchange(builder.build().encode().toUri(), HttpMethod.POST, entity, String.class);		
 		//assertThat(response.getStatusCode(), is(HttpStatus.CREATED));
 		String location = result.getHeaders().getLocation().toString();
 		String id = location.substring(location.lastIndexOf('/')+1);
