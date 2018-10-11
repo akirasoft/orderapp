@@ -27,7 +27,9 @@ public class AccountService {
         final Account newAccount = new Account();
         newAccount.setName(account.getName());
         newAccount.setType(account.getType());
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException ex) {}
         return accountRepository.save(newAccount);
     }
-
 }

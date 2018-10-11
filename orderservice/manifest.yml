@@ -1,8 +1,12 @@
 ---
 applications:
 - name: order-service
-  memory: 1G
+  memory: 800MB
   random-route: true
   path: target/orderservice-0.0.1-SNAPSHOT.jar
   services:
-    - dev-demo-instance
+    - pcf-appd-instance 
+    - account-service
+  env:
+    APPDYNAMICS_AGENT_APPLICATION_NAME: <first>-<last>-app
+    APPDYNAMICS_AGENT_TIER_NAME: orderservice

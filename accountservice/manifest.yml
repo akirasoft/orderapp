@@ -1,8 +1,11 @@
 ---
 applications:
-- name: account-service-v1
-  memory: 1G
+- name: account-service-blue
+  memory: 800MB
   random-route: true
   path: target/accountservice-0.0.1-SNAPSHOT.jar
   services:
-    - dev-demo-instance
+    - pcf-appd-instance
+  env:
+    APPDYNAMICS_AGENT_APPLICATION_NAME: <first>-<last>-app
+    APPDYNAMICS_AGENT_TIER_NAME: accountservice
