@@ -1,6 +1,6 @@
 ---
 applications:
-- name: account-service-blue
+- name: account-service
   memory: 800MB
   random-route: true
   path: target/accountservice-0.0.1-SNAPSHOT.jar
