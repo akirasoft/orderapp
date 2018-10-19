@@ -45,9 +45,6 @@ public class OrdersServiceController {
 
 	@Value("${accountServiceUrl}")
 	private String accountServiceUrl;
-
-	//@Value("${url}")
-	//private String url;
 	
 	public void setServiceUrl(String accountServiceUrl) {
 		this.accountServiceUrl = accountServiceUrl;
@@ -74,30 +71,6 @@ public class OrdersServiceController {
         return orderService.createOrder(order);
 	}
     	
-/**
-	@RequestMapping(value = "/orders", method = RequestMethod.POST)
-    public ResponseEntity<Void> createOrder(@RequestBody Order order,
-    		@RequestParam(value="createaccount", required=false) String createAccount,
-    		@RequestParam(value="name", required=false) String accountName,
-    		@RequestParam(value="type", required=false) String accountType, 
-    		UriComponentsBuilder ucBuilder) {
-
-		System.out.println("Creating Order: " + order);
-
-        HttpHeaders headers = new HttpHeaders();
-        if (createAccount != null && createAccount.equals("true")) {
-        	int accountId = createAccount(accountName, accountType);
-        	order.setAccountId(accountId);
-        } else {
-        	if (!isExistingAccount(order.getAccountId())) {
-        		return new ResponseEntity<Void>(headers, HttpStatus.NOT_FOUND);
-        	}
-        }
-        int id = orderService.createOrder(order);
-        headers.setLocation(ucBuilder.path("/orders/{id}").buildAndExpand(id).toUri());
-        return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
-	}
-	**/
 	
     @GetMapping("/{orderId}")
 	public Optional<Order> getAccount(@PathVariable Long orderId) {	
@@ -105,18 +78,6 @@ public class OrdersServiceController {
 		return orderService.findOrderById(orderId);	
 	}
 
-/**    
-	@RequestMapping(value = "/orders/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Order> getOrder(@PathVariable("id") String id) {	
-		System.out.println("Getting order with id: " + id);
-		Order order = orderService.getOrder(Integer.parseInt(id));
-		if (order == null) {
-			return new ResponseEntity<Order>(HttpStatus.NOT_FOUND);
-		}
-		return new ResponseEntity<Order>(order, HttpStatus.OK);		
-	}
-**/	
-    
 	protected Long createAccount(String name, String type)	{
         if (type == null || type.isEmpty()) {
         	type = "DEFAULT";
